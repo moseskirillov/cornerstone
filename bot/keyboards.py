@@ -1,6 +1,6 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 
-from database.repository import fetch_all_districts, fetch_available_types, fetch_available_times
+from database.repository import fetch_all_types, fetch_available_times, fetch_available_districts
 
 find_group_callback = 'find_group'
 
@@ -17,14 +17,14 @@ send_contact_keyboard = ReplyKeyboardMarkup([
 ], resize_keyboard=True, one_time_keyboard=True)
 
 
-async def districts_keyboard():
-    districts = await fetch_all_districts()
-    return split_list_and_create_buttons(input_list=districts, is_districts=True)
-
-
-async def types_keyboard(district_callback):
-    types = await fetch_available_types(district_callback=district_callback)
+async def types_keyboard():
+    types = await fetch_all_types()
     return split_list_and_create_buttons(input_list=types, is_districts=False)
+
+
+async def districts_keyboard(type_callback):
+    districts = await fetch_available_districts(type_callback)
+    return split_list_and_create_buttons(input_list=districts, is_districts=True)
 
 
 async def times_keyboard(district_callback, type_callback):

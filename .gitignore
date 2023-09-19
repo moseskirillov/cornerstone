@@ -2,3 +2,4 @@
 venv
 /default
 /sheets_key.json
+../__pycache__

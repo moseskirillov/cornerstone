@@ -9,8 +9,8 @@ from telegram import Update, ReplyKeyboardRemove
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
-from bot.keyboards import start_keyboard, districts_keyboard, types_keyboard, times_keyboard, add_to_group_keyboard, \
-    send_contact_keyboard, cancel_keyboard
+from bot.keyboards import start_keyboard, types_keyboard, times_keyboard, add_to_group_keyboard, \
+    send_contact_keyboard, cancel_keyboard, districts_keyboard
 from database.models import CreateUserRequest
 from database.repository import fetch_groups_by_params, fetch_leader_name_by_telegram, create_or_update_user
 from sheet.request import AddRequest
@@ -21,7 +21,8 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await create_or_update_user(CreateUserRequest(
         first_name=update.effective_chat.first_name,
         last_name=update.effective_chat.last_name or None,
-        telegram_id=update.effective_chat.id
+        telegram_id=update.effective_chat.id,
+        telegram_login=update.effective_chat.username
     ))
     context.user_data['user_id'] = update.effective_chat.id
     if update.callback_query:
@@ -34,14 +35,14 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     )
 
 
-async def select_district_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def select_type_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = context.user_data.get('user_id')
     if user_id:
         await update.callback_query.answer()
-        keyboard = await districts_keyboard()
+        keyboard = await types_keyboard()
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text='Нажмите на кнопку, чтобы выбрать район',
+            text='Нажмите на кнопку, чтобы выбрать тип',
             reply_markup=keyboard
         )
     else:
@@ -51,16 +52,16 @@ async def select_district_handler(update: Update, context: ContextTypes.DEFAULT_
         )
 
 
-async def select_type_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def select_district_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = context.user_data.get('user_id')
     if user_id:
         await update.callback_query.answer()
-        district_callback = update.callback_query.data
-        context.chat_data['district_callback'] = district_callback
-        keyboard = await types_keyboard(district_callback=district_callback)
+        type_callback = update.callback_query.data
+        context.chat_data['type_callback'] = type_callback
+        keyboard = await districts_keyboard(type_callback)
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text='Нажмите на кнопку, чтобы выбрать тип',
+            text='Нажмите на кнопку, чтобы выбрать район',
             reply_markup=keyboard
         )
     else:
@@ -74,9 +75,9 @@ async def select_time_handler(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_id = context.user_data.get('user_id')
     if user_id:
         await update.callback_query.answer()
-        district_callback = context.chat_data['district_callback']
-        type_callback = update.callback_query.data
-        context.chat_data['type_callback'] = type_callback
+        district_callback = update.callback_query.data
+        context.chat_data['district_callback'] = district_callback
+        type_callback = context.chat_data['type_callback']
         keyboard = await times_keyboard(district_callback=district_callback, type_callback=type_callback)
         await context.bot.send_message(
             chat_id=update.effective_chat.id,

@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(AsyncAttrs, DeclarativeBase):
-    metadata = MetaData(schema='kk_bot')
+    metadata = MetaData(schema='cornerstone')
 
 
 class User(Base):
@@ -16,6 +16,7 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(length=255), nullable=True)
     last_name: Mapped[str] = mapped_column(String(length=255), nullable=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    telegram_login: Mapped[str] = mapped_column(String(length=255), nullable=True)
     last_login: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_leader: Mapped[bool] = mapped_column(Boolean, default=False)

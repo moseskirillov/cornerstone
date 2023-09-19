@@ -21,45 +21,37 @@ async def create_or_update_user(request: CreateUserRequest):
                 await session.execute(insert(User), [{
                     'first_name': request.first_name,
                     'last_name': request.last_name,
+                    'telegram_login': request.telegram_login,
                     'telegram_id': request.telegram_id
                 }])
 
 
-async def fetch_all_districts():
+async def fetch_all_types():
     async with async_session() as session:
         async with session.begin():
             rows = await session.execute(
                 select(Group)
                 .where(Group.is_open)
+                .join(Type)
+                .distinct(Type.title)
+            )
+            groups = rows.scalars().all()
+            return [group.group_type for group in groups]
+
+
+async def fetch_available_districts(type_callback):
+    async with async_session() as session:
+        async with session.begin():
+            rows = await session.execute(
+                select(Group)
+                .where(Group.is_open)
+                .where(Type.callback == type_callback)
                 .join(District)
+                .join(Type)
                 .distinct(District.title)
             )
             groups = rows.scalars().all()
             return [group.district for group in groups]
-
-
-async def fetch_available_types(district_callback):
-    async with async_session() as session:
-        async with session.begin():
-            if district_callback == 'district_9999':
-                rows = await session.execute(
-                    select(Group)
-                    .distinct(Type.title)
-                    .where(Group.is_open)
-                    .join(Type)
-                    .join(District)
-                )
-            else:
-                rows = await session.execute(
-                    select(Group)
-                    .distinct(Type.title)
-                    .where(Group.is_open)
-                    .where(District.callback == district_callback)
-                    .join(Type)
-                    .join(District)
-                )
-            groups = rows.scalars().all()
-            return [group.group_type for group in groups]
 
 
 async def fetch_available_times(district_callback, type_callback):
