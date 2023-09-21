@@ -45,7 +45,7 @@ def split_list_and_create_buttons(input_list, is_districts):
             callback_data=f'{item.callback if hasattr(item, "callback") else str(item)}'
         )
 
-    if is_districts:
+    if is_districts and len(input_list) > 1:
         input_list.append(Button(title='Любой', callback='district_9999'))
     sub_lists = [input_list[i:i + 3] for i in range(0, len(input_list), 3)]
     inline_keyboard = []
