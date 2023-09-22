@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(AsyncAttrs, DeclarativeBase):
-    metadata = MetaData(schema='cornerstone')
+    metadata = MetaData(schema='kk_bot')
 
 
 class User(Base):

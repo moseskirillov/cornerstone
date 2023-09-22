@@ -2,14 +2,14 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMa
 
 from database.repository import fetch_all_types, fetch_available_times, fetch_available_districts
 
-find_group_callback = 'find_group'
+FIND_GROUP_CALLBACK = 'find_group'
 
 start_keyboard = InlineKeyboardMarkup(
-    [[InlineKeyboardButton(text='Подобрать группу', callback_data=find_group_callback)]],
+    [[InlineKeyboardButton(text='Подобрать группу', callback_data=FIND_GROUP_CALLBACK)]],
 )
 
 cancel_keyboard = InlineKeyboardMarkup(
-    [[InlineKeyboardButton(text='Вернуться', callback_data=find_group_callback)]],
+    [[InlineKeyboardButton(text='Вернуться', callback_data=FIND_GROUP_CALLBACK)]],
 )
 
 send_contact_keyboard = ReplyKeyboardMarkup([

@@ -87,7 +87,7 @@ async def fetch_groups_by_params(district_callback, type_callback, selected_time
                 rows = await session.execute(
                     select(Group)
                     .where(Type.callback == type_callback)
-                    .where(Group.time == selected_time)
+                    .where(Group.time == selected_time if selected_time else 1 == 1)
                     .where(Group.is_open)
                     .join(Type)
                     .join(District)
@@ -98,7 +98,7 @@ async def fetch_groups_by_params(district_callback, type_callback, selected_time
                     select(Group)
                     .where(District.callback == district_callback)
                     .where(Type.callback == type_callback)
-                    .where(Group.time == selected_time)
+                    .where(Group.time == selected_time if selected_time else 1 == 1)
                     .where(Group.is_open)
                     .join(Type)
                     .join(District)
