@@ -1,15 +1,19 @@
 import os
 
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    create_async_engine,
+    async_sessionmaker,
+    AsyncSession,
+)
 
 from database.entities import Base
 
-engine: AsyncEngine = create_async_engine(
-    os.getenv('DB_CONNECTION_STRING'),
-    echo=True
-)
+engine: AsyncEngine = create_async_engine(os.getenv("DB_CONNECTION_STRING"), echo=True)
 
-async_session: async_sessionmaker[AsyncSession] = async_sessionmaker(engine, expire_on_commit=False)
+async_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
+    engine, expire_on_commit=False
+)
 
 
 async def database_init() -> None:

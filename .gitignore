@@ -1,5 +1,6 @@
-.idea
 venv
 /default
 /sheets_key.json
 ../__pycache__
+.vscode
+default

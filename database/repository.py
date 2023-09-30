@@ -18,12 +18,17 @@ async def create_or_update_user(request: CreateUserRequest):
             if user:
                 user.last_login = datetime.now()
             else:
-                await session.execute(insert(User), [{
-                    'first_name': request.first_name,
-                    'last_name': request.last_name,
-                    'telegram_login': request.telegram_login,
-                    'telegram_id': request.telegram_id
-                }])
+                await session.execute(
+                    insert(User),
+                    [
+                        {
+                            "first_name": request.first_name,
+                            "last_name": request.last_name,
+                            "telegram_login": request.telegram_login,
+                            "telegram_id": request.telegram_id,
+                        }
+                    ],
+                )
 
 
 async def fetch_all_types():
@@ -57,7 +62,7 @@ async def fetch_available_districts(type_callback):
 async def fetch_available_times(district_callback, type_callback):
     async with async_session() as session:
         async with session.begin():
-            if district_callback == 'district_9999':
+            if district_callback == "district_9999":
                 rows = await session.execute(
                     select(Group.time)
                     .distinct()
@@ -83,7 +88,7 @@ async def fetch_available_times(district_callback, type_callback):
 async def fetch_groups_by_params(district_callback, type_callback, selected_time):
     async with async_session() as session:
         async with session.begin():
-            if district_callback == 'district_9999':
+            if district_callback == "district_9999":
                 rows = await session.execute(
                     select(Group)
                     .where(Type.callback == type_callback)
